@@ -1,10 +1,8 @@
 import React from 'react';
-import ItemDetails from '../item-details';
-import withDataDetails from '../hoc-helpers/with-data-detail';
-import withSwapiService from '../hoc-helpers/with-swapi-service/with-swapi-service';
-import { Record } from '../item-details';
+import ItemDetails, { Record } from '../item-details';
+import { withSwapiService, withDataDetail, compose } from '../hoc-helpers';
 
-const withChildComponents = (Wrapped, fn) => {
+const withChildComponents = (fn) => (Wrapped) => {
   return (props) => {
     return (
       <Wrapped { ...props }>
@@ -14,12 +12,33 @@ const withChildComponents = (Wrapped, fn) => {
   }
 }
 
-const renderPlanetDetails = () => {
+const renderPeopleDetails = () => {
   return (
     <React.Fragment>
       <Record field="gender" label="Gender" />
       <Record field="birthYear" label="Birth Year" />
       <Record field="eyeColor" label="Eye Color" />
+    </React.Fragment>
+  )
+}
+
+const renderPlanetDetails = () => {
+  return (
+    <React.Fragment>
+      <Record field="climate" label="Climate" />
+      <Record field="terrain" label="Terrain" />
+      <Record field="diameter" label="Diameter" />
+    </React.Fragment>
+  )
+}
+
+const renderStarshipDetails = () => {
+  return (
+    <React.Fragment>
+      <Record field="model" label="Model" />
+      <Record field="manufacturer" label="Manufacturer" />
+      <Record field="passengers" label="Passengers" />
+      <Record field="costInCredits" label="Cost" />
     </React.Fragment>
   )
 }
@@ -45,20 +64,23 @@ const mapStarshipMethodsToProps = (api) => {
   }
 }
 
-const PersonDetails = withSwapiService(
-                        withDataDetails(
-                          withChildComponents(ItemDetails, renderPlanetDetails)),
-                          mapPersonMethodsToProps);
+const PersonDetails = compose(
+                        withSwapiService(mapPersonMethodsToProps),
+                        withDataDetail,
+                        withChildComponents(renderPeopleDetails)
+                      )(ItemDetails);
 
-const PlanetDetails = withSwapiService(
-                        withDataDetails(
-                          withChildComponents(ItemDetails, renderPlanetDetails)),
-                          mapPlanetMethodsToProps);
+const PlanetDetails = compose(
+                        withSwapiService(mapPlanetMethodsToProps),
+                        withDataDetail,
+                        withChildComponents(renderPlanetDetails)
+                      )(ItemDetails);
 
-const StarshipDetails = withSwapiService(
-                        withDataDetails(
-                          withChildComponents(ItemDetails, renderPlanetDetails)),
-                          mapStarshipMethodsToProps);
+const StarshipDetails = compose(
+                        withSwapiService(mapStarshipMethodsToProps),
+                        withDataDetail,
+                        withChildComponents(renderStarshipDetails)
+                      )(ItemDetails);
 
 export {
   PersonDetails,

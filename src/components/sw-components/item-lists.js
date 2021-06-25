@@ -1,9 +1,8 @@
 import React from 'react';
-import withData from '../hoc-helpers/with-data/';
 import itemList from '../item-list/';
-import withSwapiService from '../hoc-helpers/with-swapi-service/with-swapi-service';
+import { withData, withSwapiService, compose } from '../hoc-helpers';
 
-const withChildFunction = (Wrapped, fn) => {
+const withChildFunction = (fn) => (Wrapped) => {
   return (props) => {
     return (
       <Wrapped {...props}>
@@ -14,6 +13,7 @@ const withChildFunction = (Wrapped, fn) => {
 }
 
 const renderName = ({ name, gender, birthYear }) => (<p>{ name } <span className="gray">({ gender }, { birthYear })</span></p>);
+const renderPopulationAndName = ({ name, population }) => (<p>{ name } <span className="gray">({ population })</span></p>);
 const renderModelAndName = ({ name, model }) => (<p>{ name } ({ model })</p>);
 
 const mapPersonMethodsToProps = (api) => {
@@ -34,20 +34,23 @@ const mapStarshipMethodsToProps = (api) => {
   }
 }
 
-const PersonList = withSwapiService(
-                    withData(
-                      withChildFunction(itemList, renderName)),
-                      mapPersonMethodsToProps);
+const PersonList = compose(
+                      withSwapiService(mapPersonMethodsToProps),
+                      withData,
+                      withChildFunction(renderName)
+                    )(itemList);
 
-const PlanetList = withSwapiService(
-                    withData(
-                      withChildFunction(itemList, renderName)),
-                      mapPlanetMethodsToProps);
+const PlanetList = compose(
+                      withSwapiService(mapPlanetMethodsToProps),
+                      withData,
+                      withChildFunction(renderPopulationAndName)
+                    )(itemList);
 
-const StarshipList = withSwapiService(
-                      withData(
-                        withChildFunction(itemList, renderModelAndName)),
-                        mapStarshipMethodsToProps);
+const StarshipList = compose(
+                      withSwapiService(mapStarshipMethodsToProps),
+                      withData,
+                      withChildFunction(renderModelAndName)
+                    )(itemList);
 
 export {
   PersonList,
