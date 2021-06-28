@@ -2,4 +2,4 @@
 
 ### `Link`
 
-Open [https://romagan.github.io/react-stardb](https://romagan.github.io/react-stardb) to view it in the browser.
+Open [https://romagan.github.io/react-starDb/](https://romagan.github.io/react-starDb/) to view it in the browser.
